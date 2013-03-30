@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ OwnerName }}のタイムライン</title>
+        <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.css" />
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-responsive.css" />
+    </head>
+    <body>
+         <div class="navbar navbar-inverse navbar-fixed-top">
+             <div class="navbar-inner">
+                 <div class="container">
+                     <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                         <span class="icon-bar"></span>
+                         <span class="icon-bar"></span>
+                     </button>
+                     <div class="nav-collapse collapse">
+                         <ul class="nav">
+                             <li class="active"><a href="/">Home</a></li>
+                             <li class="logout"><a href="/logout">Logout</a></li>
+                         </ul>
+                     </div>
+                 </div>
+             </div>
+         </div>
+        <div class="container">
+            <div class="row">
+                <img src="{{ OwnerProfileImage }}" class="img-polaroid" alt="{{OwnerName}}" />
+                <a href="/friends/{{ OwnerScreenName }}">{{ OwnerName }} </a>
+                @{{ OwnerScreenName }}
+                <div class="span12">{{ OwnerDiscription }}</div>
+                {% if IsMyHome %}
+                <form action="/post" method="post">
+                    <textarea class="span12" rows="3" name="tweet" maxlength="140"></textarea>
+                    <input type="submit" class="btn" value="つぶやく" />
+                    {% csrf_token %}
+                </form>
+                {% endif %}
+            </div>
+            {% if Result %}
+            <div class="row">
+            <!-- timeline -->
+            <table class="table table-striped table-hover">
+              <tbody>
+              {% for st in Result %}
+              <tr>
+                  <th><img src="{{ st.author.profile_image_url_https }}"
+                      class="thumbnail"
+                      alt="{{st.author.screen_name}}"
+                      width=56 height=56 /></th>
+                  <th>
+                      <a href="/friends/{{ st.author.screen_name }}">{{ st.user.name }} </a>
+                      @{{ st.author.screen_name }}
+                  </th>
+                  <th>{{ st.text }}</th>
+                  <!-- 自分の発言に対してのみ削除リンクを表示 -->
+                  {% ifequal st.author.screen_name MyScreenName %}
+                  &nbsp;&nbsp;<a href="/delete/{{ st.id }}">削除</a>
+                  {% endifequal %}
+                  <th class="hidden-phone">from {{ st.source }} &nbsp;&nbsp {{ st.created_at }}</th>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <!-- //timeline -->
+            </div>
+            {% endif %}
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+    </body>
+</html>

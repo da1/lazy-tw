@@ -1,0 +1,4 @@
+*.pyc
+tw/db
+tw/static
+

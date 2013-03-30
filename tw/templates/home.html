@@ -58,11 +58,13 @@
                       <a href="/friends/{{ st.author.screen_name }}">{{ st.user.name }} </a>
                       @{{ st.author.screen_name }}
                   </th>
-                  <th>{{ st.text }}</th>
-                  <!-- 自分の発言に対してのみ削除リンクを表示 -->
-                  {% ifequal st.author.screen_name MyScreenName %}
-                  &nbsp;&nbsp;<a href="/delete/{{ st.id }}">削除</a>
-                  {% endifequal %}
+                  <th>
+                    {{ st.text }}
+                    <!-- 自分の発言に対してのみ削除リンクを表示 -->
+                    {% ifequal st.author.screen_name MyScreenName %}
+                    &nbsp;&nbsp;<a href="/delete/{{ st.id }}">削除</a>
+                    {% endifequal %}
+                  </th>
                   <th class="hidden-phone">from {{ st.source }} &nbsp;&nbsp {{ st.created_at }}</th>
               </tr>
               {% endfor %}

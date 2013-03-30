@@ -7,14 +7,22 @@ import tweepy
 import datetime
 from multiprocessing import Process
 import time
+import ConfigParser
+import random
 
 #画面表示用テンプレートHTMLのファイル名
 LOGIN_TEMPLATE_NAME = 'login.html' #ログイン画面
 HOME_TEMPLATE_NAME = 'home.html' #タイムライン表示用
 
-CONSUMER_KEY = ""
-CONSUMER_SECRET = ""
-CALLBACK_URL = ""
+conf = ConfigParser.SafeConfigParser()
+conf.read("tw/config.ini")
+
+CONSUMER_KEY = conf.get("config", "consumer_key")
+CONSUMER_SECRET = conf.get("config", "consumer_secret")
+CALLBACK_URL = conf.get("config", "callback_url")
+
+def test(request):
+    return render_to_response('test.html', context_instance=RequestContext(request))
 
 def RedirectHome():
     return HttpResponseRedirect(reverse('tw.views.index'))
@@ -90,11 +98,14 @@ def post(request):
 
     key = request.session.get('key')
     secret = request.session.get('secret')
-    lazyPost(tweet, key, secret)
+
+    p = Process(target=lazyPost, args=(tweet, key, secret))
+    p.daemon = True
+    p.start()
     return RedirectHome()
 
 def lazyPost(text, key, secret):
-    lazyTime = 60 * 60 * 3
+    lazyTime = random.randint(10, 10)
     print("After", lazyTime, "sec ago", datetime.datetime.now())
     time.sleep(lazyTime)
     postTweet(text, key, secret)

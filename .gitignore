@@ -1,3 +1,5 @@
+*.swp
+*.ini
 *.pyc
 tw/db
 tw/static

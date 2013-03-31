@@ -13,16 +13,14 @@ import random
 #画面表示用テンプレートHTMLのファイル名
 LOGIN_TEMPLATE_NAME = 'login.html' #ログイン画面
 HOME_TEMPLATE_NAME = 'home.html' #タイムライン表示用
+HOME_PATH=""
 
 conf = ConfigParser.SafeConfigParser()
-conf.read("tw/config.ini")
+conf.read(HOME_PATH + "tw/config.ini")
 
 CONSUMER_KEY = conf.get("config", "consumer_key")
 CONSUMER_SECRET = conf.get("config", "consumer_secret")
 CALLBACK_URL = conf.get("config", "callback_url")
-
-def test(request):
-    return render_to_response('test.html', context_instance=RequestContext(request))
 
 def RedirectHome():
     return HttpResponseRedirect(reverse('tw.views.index'))

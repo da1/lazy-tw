@@ -27,4 +27,5 @@ urlpatterns = patterns('tw.views',
     url(r'^friends/(?P<username>\w+)/$', 'friends', name='friends'),
     # logout
     url(r'^logout$', 'logout', name='logout'),
+    (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain"))
 )

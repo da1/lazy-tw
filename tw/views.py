@@ -4,23 +4,23 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 import tweepy
-import datetime
+from datetime import datetime
 from multiprocessing import Process
 import time
-import ConfigParser
 import random
+from Config import Config
+import logging
 
 #画面表示用テンプレートHTMLのファイル名
 LOGIN_TEMPLATE_NAME = 'login.html' #ログイン画面
 HOME_TEMPLATE_NAME = 'home.html' #タイムライン表示用
-HOME_PATH=""
 
-conf = ConfigParser.SafeConfigParser()
-conf.read(HOME_PATH + "tw/config.ini")
+conf = Config()
+CONSUMER_KEY = conf.CONSUMER_KEY
+CONSUMER_SECRET = conf.CONSUMER_SECRET
+CALLBACK_URL = conf.CALLBACK_URL
 
-CONSUMER_KEY = conf.get("config", "consumer_key")
-CONSUMER_SECRET = conf.get("config", "consumer_secret")
-CALLBACK_URL = conf.get("config", "callback_url")
+logger = logging.getLogger(__name__)
 
 def RedirectHome():
     return HttpResponseRedirect(reverse('tw.views.index'))
@@ -86,6 +86,18 @@ def get_callback(request):
     request.session['secret'] = auth.access_token.secret
     return RedirectHome()
 
+def lazyPost(text, key, secret):
+    lazy = conf.LAZY
+    lazyTime = random.randint(lazy[0], lazy[1])
+    logger.info("lazy(sec):%d now:%s"%(lazyTime, datetime.now().isoformat()))
+    time.sleep(lazyTime)
+    postTweet(text, key, secret)
+
+def postTweet(tweet, key, secret):
+    api = getApi(key, secret)
+    api.update_status(tweet)
+    logger.info("tweet success now:%s", datetime.now().isoformat())
+
 def post(request):
     if not (isAuthorized(request) and request.method == 'POST'):
         return RedirectHome()
@@ -101,17 +113,6 @@ def post(request):
     p.daemon = True
     p.start()
     return RedirectHome()
-
-def lazyPost(text, key, secret):
-    lazyTime = random.randint(10, 10)
-    print("After", lazyTime, "sec ago", datetime.datetime.now())
-    time.sleep(lazyTime)
-    postTweet(text, key, secret)
-
-def postTweet(tweet, key, secret):
-    api = getApi(key, secret)
-    api.update_status(tweet)
-    print("tweet success", datetime.datetime.now())
 
 def delete(request, id):
     if isAuthorized(request):

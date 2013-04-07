@@ -93,7 +93,7 @@ def get_callback(request):
     return RedirectHome()
 
 def lazyPost(text, key, secret):
-    lazy = conf.LAZY
+    lazy = Config().LAZY
     lazyTime = random.randint(lazy[0], lazy[1])
     api = getApi(key, secret)
     logger.info("screen_name:%s lazy(sec):%d" % (api.me().screen_name, lazyTime))

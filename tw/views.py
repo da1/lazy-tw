@@ -84,19 +84,25 @@ def get_callback(request):
 
     request.session['key'] = auth.access_token.key
     request.session['secret'] = auth.access_token.secret
+
+    api = tweepy.API(auth_handler=auth)
+    me = api.me()
+    logger.info("%s login", me.screen_name)
+
     return RedirectHome()
 
 def lazyPost(text, key, secret):
     lazy = conf.LAZY
     lazyTime = random.randint(lazy[0], lazy[1])
-    logger.info("lazy(sec):%d now:%s"%(lazyTime, datetime.now().isoformat()))
+    api = getApi(key, secret)
+    logger.info("screen_name: %s lazy(sec):%d", (api.me().screen_name, lazyTime))
     time.sleep(lazyTime)
     postTweet(text, key, secret)
 
 def postTweet(tweet, key, secret):
     api = getApi(key, secret)
     api.update_status(tweet)
-    logger.info("tweet success now:%s", datetime.now().isoformat())
+    logger.info("screen_name:%s tweet success", api.me().screen_name)
 
 def post(request):
     if not (isAuthorized(request) and request.method == 'POST'):

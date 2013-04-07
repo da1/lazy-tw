@@ -57,6 +57,7 @@ def index(request):
         'OwnerDiscription': me.description,
         'Result': timeline_list
     })
+
     return render_to_response(HOME_TEMPLATE_NAME, ctxt)
 
 def login(request):
@@ -87,7 +88,7 @@ def get_callback(request):
 
     api = tweepy.API(auth_handler=auth)
     me = api.me()
-    logger.info("%s login", me.screen_name)
+    logger.info("screen_name:%s login" % (me.screen_name,))
 
     return RedirectHome()
 
@@ -95,14 +96,14 @@ def lazyPost(text, key, secret):
     lazy = conf.LAZY
     lazyTime = random.randint(lazy[0], lazy[1])
     api = getApi(key, secret)
-    logger.info("screen_name: %s lazy(sec):%d", (api.me().screen_name, lazyTime))
+    logger.info("screen_name:%s lazy(sec):%d" % (api.me().screen_name, lazyTime))
     time.sleep(lazyTime)
     postTweet(text, key, secret)
 
 def postTweet(tweet, key, secret):
     api = getApi(key, secret)
     api.update_status(tweet)
-    logger.info("screen_name:%s tweet success", api.me().screen_name)
+    logger.info("screen_name:%s tweet success" % (api.me().screen_name, ))
 
 def post(request):
     if not (isAuthorized(request) and request.method == 'POST'):
@@ -125,6 +126,7 @@ def delete(request, id):
         api = getApi(request.session.get('key'), request.session.get('secret'))
         tweet = api.get_status(id)
         tweet.destroy()
+        logger.info("screen_name:%s tweet_id:%s delete" % (api.me().screen_name, id))
     return RedirectHome()
 
 def friends(request, username):
@@ -151,6 +153,8 @@ def friends(request, username):
     return render_to_response(HOME_TEMPLATE_NAME, ctxt)
 
 def logout(request):
+    api = getApi(request.session.get('key'), request.session.get('secret'))
+    logger.info("screen_name:%s logout" % (api.me().screen_name, ))
     del request.session['key']
     del request.session['secret']
     return RedirectHome()

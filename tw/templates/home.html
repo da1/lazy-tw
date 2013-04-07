@@ -13,22 +13,22 @@
         <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-responsive.css" />
     </head>
     <body>
-         <div class="navbar navbar-inverse navbar-fixed-top">
-             <div class="navbar-inner">
-                 <div class="container">
-                     <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                         <span class="icon-bar"></span>
-                         <span class="icon-bar"></span>
-                     </button>
-                     <div class="nav-collapse collapse">
-                         <ul class="nav">
-                             <li class="active"><a href="/">Home</a></li>
-                             <li class="logout"><a href="/logout">Logout</a></li>
-                         </ul>
-                     </div>
-                 </div>
-             </div>
-         </div>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="/">Home</a></li>
+                            <li class="logout"><a href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <div class="row">
                 <img src="{{ OwnerProfileImage }}" class="img-polaroid" alt="{{OwnerName}}" />
@@ -50,15 +50,16 @@
               <tbody>
               {% for st in Result %}
               <tr>
-                  <th><img src="{{ st.author.profile_image_url_https }}"
+                  <th width="56px">
+                    <img src="{{ st.author.profile_image_url_https }}"
                       class="thumbnail"
-                      alt="{{st.author.screen_name}}"
-                      width=56 height=56 /></th>
+                      alt="{{st.author.screen_name}}" /></th>
                   <th>
+                    <small>
                       <a href="/friends/{{ st.author.screen_name }}">{{ st.user.name }} </a>
                       @{{ st.author.screen_name }}
-                  </th>
-                  <th>
+                      </br>
+                    </small>
                     {{ st.text }}
                     <!-- 自分の発言に対してのみ削除リンクを表示 -->
                     {% ifequal st.author.screen_name MyScreenName %}

@@ -14,8 +14,9 @@ framework.
 
 """
 import os, sys
-import lazy.Config
-sys.path.append(lazy.Config.Config().PROJECT_PATH)
+sys.path.append(os.path.dirname(__file__))
+import Config
+sys.path.append(Config.Config().PROJECT_PATH)
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use

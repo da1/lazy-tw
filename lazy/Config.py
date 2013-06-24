@@ -9,7 +9,9 @@ class Config:
         self.__PROJECT_PATH = conf.get("config", "project_path")
         self.__HOST         = conf.get("config", "host")
         self.__SECRET_KEY   = conf.get("config", "secret_key")
-        self.__DEBUG        = conf.get("config", "debug")
+        self.__DEBUG        = conf.get("config", "debug") == "True"
+        self.__NAME         = conf.get("config", "name")
+        self.__EMAIL        = conf.get("config", "email")
 
     @property
     def PROJECT_PATH(self):
@@ -26,3 +28,7 @@ class Config:
     @property
     def DEBUG(self):
         return self.__DEBUG
+
+    @property
+    def ADMINS(self):
+        return (self.__NAME, self.__EMAIL)
